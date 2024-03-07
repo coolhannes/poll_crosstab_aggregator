@@ -1,0 +1,45 @@
+---
+title: "NYTimes Crosstabs Over Time"
+output: html_document
+date: "2024-03-06"
+---
+
+```{r}
+
+library(readr)
+library(tidyverse)
+
+nytimes_crosstabs_long <- read_csv("/Users/johannes/git/poll_crosstab_aggregator/exports/nyt_crosstabs.csv")
+
+national_all_voters_age <- nytimes_crosstabs_long %>%
+    filter(grepl('all_voters',df_name)) %>%
+    filter(grepl('presidential election were held today', question)) %>%
+    filter(substr(cross_tab,0,3)=="age") %>%
+    filter(response=="Joe Biden, the Democrat")
+
+national_all_voters_age %>%
+    ggplot(aes(x = fielding_end_date, y = values_clean, color = cross_tab)) +
+        geom_line() +
+        geom_point() + 
+        labs(title = "NYTimes 2024 Polling (Adults)", x = "Fielding End Date", y = "Percent Supporting Joe Biden", color = "Crosstab") +
+        scale_y_continuous(labels = scales::percent_format(accuracy = 2), n.breaks = 10) +
+        scale_x_date(breaks = unique(national_all_voters$fielding_end_date)) + 
+        theme_minimal()
+
+national_all_voters_income <- nytimes_crosstabs_long %>%
+    filter(grepl('all_voters',df_name)) %>%
+    filter(grepl('presidential election were held today', question)) %>%
+    filter(grepl('income_', cross_tab)) %>%
+    filter(response=="Joe Biden, the Democrat")
+
+national_all_voters_income %>%
+    ggplot(aes(x = fielding_end_date, y = values_clean, color = cross_tab)) +
+        geom_line() +
+        geom_point() + 
+        labs(title = "NYTimes 2024 Polling (Adults)", x = "Fielding End Date", y = "Percent Supporting Joe Biden", color = "Crosstab") +
+        scale_y_continuous(labels = scales::percent_format(accuracy = 2), n.breaks = 10, limits = c(.2,.6)) +
+        scale_x_date(breaks = unique(national_all_voters$fielding_end_date)) + 
+        theme_minimal()
+
+```
+
