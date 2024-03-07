@@ -79,15 +79,15 @@ concatenated_df.loc[mask, "values_clean"] = (
 )
 
 # Load the mappings from the JSON file
-with open("nyt_crosstab_mappings.json") as f:
-    nyt_crosstab_mappings = json.load(f)
+with open("crosstab_mappings.json") as f:
+    mappings = json.load(f)
 
 # Extract the mappings dictionary
-mappings = nyt_crosstab_mappings["nytimes"]["mappings"]
+nyt_crosstab_mappings = mappings["nytimes"]["mappings"]
 
 # Apply the mappings to the 'crosstab' column of concatenated_df
 concatenated_df["cross_tab"] = concatenated_df["cross_tab"].map(
-    lambda x: mappings.get(x, x)
+    lambda x: nyt_crosstab_mappings.get(x, x)
 )
 
 # Save the dataframe to a CSV file
